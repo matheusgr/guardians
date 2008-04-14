@@ -31,26 +31,37 @@ class QuotaCheckGUI:
         gtk.main_quit()
         return False
 
-    # Create a box for disk/use/situation
+    # Create a box for all disks
     def create_disks_hbox(self):
+        box = self.create_disk_hbox('Disk1', 0.99)
+        return [ box ]
+
+    # Create a box for each disk/use
+    def create_disk_hbox(self, label_text, use_value):
         box = gtk.HBox(False, 0)
         
-        label = gtk.Label("Disk1")
+        label = gtk.Label(label_text)
         label.show()
         box.pack_start(label, True, False, 10)
         
         use = gtk.ProgressBar()
-        use.set_fraction(0.34)
-        use.set_text('34%')
+        use.set_fraction(use_value)
+        use.set_text(str((int) (use_value * 100)) + '%')
         use.show()
         box.pack_start(use, True, True, 0)
-        
+
+        if use_value < 0.75:
+            file = 'green.png'
+        elif use_value > 0.95:
+            file = 'red.png'
+        else:
+            file = 'yellow.png'
         image = gtk.Image()
-        image.set_from_file('green.png')
+        image.set_from_file(file)
         image.show()
         box.pack_start(image, False, False, 10)
         box.show()
-        return [ box ]
+        return box
 
     def __init__(self):
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
