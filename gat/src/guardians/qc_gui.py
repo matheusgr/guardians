@@ -20,7 +20,7 @@ class QuotaCheckGUI:
 
     # Clean disk button callback
     def clean_disk(self, widget, data):
-        print "button %s was pressed" % data
+        print "THE button %s was pressed" % data
 
     # Continue login button callback
     def continue_login(self, widget, data):
