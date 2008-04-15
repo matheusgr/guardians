@@ -1,0 +1,17 @@
+Requisitos funcionais:
+- Mostrar o atual uso da(s) cota(s) de disco
+- Auxiliar na limpeza da conta do usuário
+- A limpeza da conta deve trabalhar com o total de uso por diretório do usuário
+- Fornecer um contato com o grupo guardians
+- Informar sobre o grupo, sobre o LCC e sobre as dúvidas mais frequentes
+- Verificar o uso da cota do usuário, numa versão a ser chamada durante o login
+
+Não funcionais:
+- A ferramente de login não deve exigir interação com o usuário se
+tudo estiver bem
+- O contato é por e-mail, sendo opcional por chat
+- Ser simples e amigável, com pouco texto e símbolos representativos
+- Ser mínima, exibindo o extremamente necessário apenas
+- Programada em Python/GTK
+- Codificação em inglês, considerando mecanismos de internacionalização
+- Arquitetrura MVC
