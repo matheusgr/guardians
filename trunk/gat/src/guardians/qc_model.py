@@ -2,6 +2,11 @@
 
 import os, rquota
 
+STATUS_EXCEPT = -1
+STATUS_OK = 1
+STATUS_NOQUOTA = 2
+STATUS_EPERM = 3
+
 # Model: [host, disk, status, values]
 # where "values" is defined at rquota structure (see unpack_rquota at rquota.py)
 class QuotaCheckModel:
@@ -21,12 +26,12 @@ class QuotaCheckModel:
         for host, disk in self.hosts:
             try:
                 (status, value) = rquota.getQuotaTCP(host, disk, self.uid)
-                if status == rquota.STATUS_OK:
+                if status == STATUS_OK:
                     result.append(self.__getList(host,disk,status,value))
                 else:
                     result.append(self.__getList(host,disk,status,()))
             except:
-                result.append(self.__getList(host,disk,rquota.STATUS_EXCEPT,()))
+                result.append(self.__getList(host,disk,STATUS_EXCEPT,()))
         return result
             
 def main():
