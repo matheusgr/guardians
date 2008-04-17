@@ -5,11 +5,6 @@ from rpc import Packer, Unpacker, TCPClient, UDPClient
 RQUOTAPROG = 100011
 RQUOTAVERS = 1
 
-STATUS_EXCEPT = -1
-STATUS_OK = 1
-STATUS_NOQUOTA = 2
-STATUS_EPERM = 3
-
 class RQuotaPacker(Packer):
     def pack_getquotaargs(self, sa):
         pathp, uid = sa

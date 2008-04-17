@@ -3,6 +3,7 @@
 import pygtk
 pygtk.require('2.0')
 import gtk
+import qc_model
 
 # GUI description:
 # disk1 use situation
@@ -33,8 +34,17 @@ class QuotaCheckGUI:
 
     # Create a box for all disks
     def create_disks_hbox(self):
-        box = self.create_disk_hbox('Disk1', 0.99)
-        return [ box ]
+        quotas = self.qc_model.getQuota()
+        result = []
+        for quota in quotas:
+            if quota[2] == qc_model.STATUS_OK:
+                host = quota[0]
+                disk = quota[1] 
+                hardlimit = float(quota[5])
+                curblocks = float(quota[7])
+                result.append(self.create_disk_hbox(host + ':' + disk, curblocks/hardlimit))
+        # box = self.create_disk_hbox('Disk1', 0.99)
+        return result
 
     # Create a box for each disk/use
     def create_disk_hbox(self, label_text, use_value):
@@ -64,6 +74,8 @@ class QuotaCheckGUI:
         return box
 
     def __init__(self):
+        self.qc_model = qc_model.QuotaCheckModel()
+        
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_title("Checagem de Cota")
         self.window.connect("delete_event", self.delete_event)
