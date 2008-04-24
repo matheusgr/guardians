@@ -11,6 +11,8 @@ try:
     import gtk.glade
 except:
     sys.exit(1)
+
+from resource import find_resource as _r
     
 class SendMessageGUI:
     """This is a GUI for the SendMessage application"""
