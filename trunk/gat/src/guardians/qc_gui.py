@@ -4,7 +4,7 @@ import pygtk
 pygtk.require("2.0")
 import gtk
 import gtk.glade    
-
+from resource import find_resource as _r
 import qc_model
 
 class QuotaCheckGUI:
@@ -14,10 +14,10 @@ class QuotaCheckGUI:
         self.qc_model = qc_model.QuotaCheckModel()
         
         #Set the Glade file
-        self.gladefile = "qc_gui.glade"  
+        self.gladefile = _r("qc_gui.glade")
         self.wTree = gtk.glade.XML(self.gladefile) 
                  
-        #Create our dictionay and connect it
+        #Create our dictionary and connect it
         dic = { "on_clean_disk_clicked" : self.clean_disk,
                 "on_continue_login_clicked" : self.continue_login,
                 "on_window1_destroy" : gtk.main_quit }
@@ -68,11 +68,11 @@ class QuotaCheckGUI:
             box.pack_start(use, True, True, 0)
     
             if use_value < 0.75:
-                file = 'green.png'
+                file = _r('green.png')
             elif use_value > 0.95:
-                file = 'red.png'
+                file = _r('red.png')
             else:
-                file = 'yellow.png'
+                file = _r('yellow.png')
             image = gtk.Image()
             image.set_from_file(file)
             image.show()
