@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.4 on Fri Apr 25 03:15:48 2008 -->
+<!--Generated with glade3 3.4.4 on Fri Apr 25 05:31:45 2008 -->
 <glade-interface>
-  <widget class="GtkWindow" id="window1">
+  <widget class="GtkWindow" id="dc_gui">
     <property name="width_request">500</property>
     <property name="height_request">500</property>
     <property name="visible">True</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
+    <signal name="destroy" handler="on_dc_gui_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -15,8 +16,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="headers_clickable">True</property>
-            <signal name="row_collapsed" handler="on_tree_row_collapsed"/>
-            <signal name="row_expanded" handler="on_tree_row_expanded"/>
+            <signal name="cursor_changed" handler="on_tree_cursor_changed"/>
           </widget>
         </child>
         <child>
@@ -24,12 +24,13 @@
             <property name="visible">True</property>
             <property name="homogeneous">True</property>
             <child>
-              <widget class="GtkButton" id="button3">
+              <widget class="GtkButton" id="delete">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="label" translatable="yes">Apagar</property>
                 <property name="response_id">0</property>
+                <signal name="clicked" handler="on_delete_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -37,12 +38,13 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="button4">
+              <widget class="GtkButton" id="compact">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="label" translatable="yes">Compactar</property>
                 <property name="response_id">0</property>
+                <signal name="clicked" handler="on_compact_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -51,12 +53,13 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="button5">
+              <widget class="GtkButton" id="move">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="label" translatable="yes">Mover</property>
                 <property name="response_id">0</property>
+                <signal name="clicked" handler="on_move_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
