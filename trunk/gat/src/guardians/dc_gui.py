@@ -35,9 +35,10 @@ class DiskCleanGUI:
         self.wTree.signal_autoconnect(dic)
         diskView = self.prepare_disk_view()
         diskTree = self.prepare_disk_tree(diskView)
-        r = dc_model.DiskCleanModel(".").get_list()
-        self.build_tree(r, None, diskTree, 200000)
+        r = dc_model.DiskCleanModel("/home/matheusgr/videos").get_list()
+        self.build_tree(r, None, diskTree, 30000000000)
         self.selected_dir = None
+
     def prepare_disk_view(self):
         diskView = self.wTree.get_widget("tree")
         
