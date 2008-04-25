@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 from guardians import dc_model
+from tarfile import TarFile
+import os
 
 import sys
 try:
@@ -25,15 +27,17 @@ class DiskCleanGUI:
         self.wTree = gtk.glade.XML(self.gladefile) 
                  
         #Create our dictionary and connect it
-        dic = { "on_tree_row_collapsed" : self.tree_row_collapsed,
-                "on_tree_row_expanded" : self.tree_row_expanded,
-                "on_dialog1_destroy" : gtk.main_quit }
+        dic = { "on_delete_clicked" : self.delete_clicked,
+                "on_compact_clicked" : self.compact_clicked,
+                "on_move_clicked" : self.move_clicked,
+                "on_tree_cursor_changed" : self.tree_cursor_changed,
+                "on_dc_gui_destroy" : gtk.main_quit }
         self.wTree.signal_autoconnect(dic)
         diskView = self.prepare_disk_view()
         diskTree = self.prepare_disk_tree(diskView)
         r = dc_model.DiskCleanModel(".").get_list()
-        self.build_tree(r, None, diskTree, 150000)
-        
+        self.build_tree(r, None, diskTree, 200000)
+        self.selected_dir = None
     def prepare_disk_view(self):
         diskView = self.wTree.get_widget("tree")
         
@@ -60,13 +64,58 @@ class DiskCleanGUI:
                 self.build_tree(a[1], insert, disktree, max)
             else:
                 insert = disktree.insert(parent, 0, [a[0], float(a[1])/max * 100])
-                
-    def tree_row_collapsed(self, widget, something, blah):
-           print (widget, something, blah)
+
+    def tree_cursor_changed(self, widget):
+        if type(widget) is None:
+            return
+        model, iter = widget.get_selection().get_selected()
+        self.selected_dir = model.get_value(iter, 0)
     
-    def tree_row_expanded(self, widget, something, blah):
-           print (widget, something, blah)
-            
+    def delete_clicked(self, widget):
+        if not (self.selected_dir is None):
+            confirmDialog = gtk.Dialog("Confirma apagar?", self.wTree.get_widget("dc_gui"), gtk.DIALOG_DESTROY_WITH_PARENT, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+            response = confirmDialog.run()
+            if response == gtk.RESPONSE_OK:
+                self.recursive_delete(self.selected_dir)
+            elif response == gtk.RESPONSE_CANCEL:
+                pass
+            confirmDialog.destroy()
+
+    def recursive_delete(self, directory):
+        try:
+            listdir = os.listdir(directory)
+            for dir in listdir:
+                self.recursive_delete(directory + os.sep + dir)
+            os.rmdir(directory)
+        except (OSError):
+            os.remove(directory)
+    
+    def compact_clicked(self, widget):
+        if not (self.selected_dir is None):
+            fileChooserDialog = gtk.FileChooserDialog("Salvar arquivo", self.wTree.get_widget("dc_gui"), gtk.FILE_CHOOSER_ACTION_SAVE, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+            fileChooserDialog.set_current_name(self.selected_dir + ".tar.bz2")
+            response = fileChooserDialog.run()
+            if response == gtk.RESPONSE_OK:
+                tmpname = os.tmpnam()
+                t = TarFile.open(tmpname, "w:bz2")
+                t.add(self.selected_dir)
+                t.close()
+                os.rename(tmpname, fileChooserDialog.get_filename())
+                self.recursive_delete(self.selected_dir)
+            elif response == gtk.RESPONSE_CANCEL:
+                pass
+            fileChooserDialog.destroy()
+
+    def move_clicked(self, widget):
+        if not (self.selected_dir is None):
+            fileChooserDialog = gtk.FileChooserDialog("Mover para", self.wTree.get_widget("dc_gui"), gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+            response = fileChooserDialog.run()
+            if response == gtk.RESPONSE_OK:
+                os.rename(self.selected_dir, fileChooserDialog.get_filename() + os.sep + self.selected_dir.split(os.sep)[-1])
+            elif response == gtk.RESPONSE_CANCEL:
+                pass
+            fileChooserDialog.destroy()
+    
 if __name__ == "__main__":
     smg = DiskCleanGUI()
     gtk.main()
