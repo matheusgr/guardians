@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys
+import sys, os
 try:
      import pygtk
      pygtk.require("2.0")
@@ -21,7 +21,20 @@ class SendMessageGUI:
                 
         #Set the Glade file
         self.gladefile = _r("ms_gui.glade")  
-        self.wTree = gtk.glade.XML(self.gladefile) 
+        self.wTree = gtk.glade.XML(self.gladefile)
+        
+        # accessing windows
+        self.principalWindow = widgetTree.get_widget('sMessageWindow')
+        self.dialogWindow = widgetTree.get_widget('waitWindow')
+        
+        # accessing widgets => principalWindow
+        self.txtMessage = widgetTree.get_widget('txtMessage')
+        self.btnCancel = widgetTree.get_widget('cancel')
+        self.btnSMessage = widgetTree.get_widget('sendMessage')
+        
+        # accessing widgets => dialogWindow
+        self.lblInformation = widgetTree.get_widget('lblInformation')
+        self.btnOk = widgetTree.get_widget('btnOk')
                  
         #Create our dictionary and connect it
         dic = { "on_cancel_clicked" : self.cancel_clicked,
@@ -30,10 +43,25 @@ class SendMessageGUI:
         self.wTree.signal_autoconnect(dic)
         
     def cancel_clicked(self, widget):
-           print "Hello World!"
+        self.clean_message()
+        gtk.main_quit
+           
     
     def sendMessage_clicked(self, widget):
-           print "Hello World!"
+        messageBuffer = self.txtMessage.get_buffer()
+        mailBody = messageBuffer.get_text(messageBuffer.get_start_iter(), messageBuffer.get_end_iter())
+        
+        # making and sending mail        
+        mail = chat.MailToGuardians(self.get_remitter(), mailBody)
+        sent = mail.send_mail()
+                    
+        self.clean_message()
+        
+    def clean_message(self):
+        self.txtMessage.get_buffer().set_text('')
+        
+    def get_remitter(self):
+        return os.getuid() + '@lcc.ufcg.edu.br'
             
 if __name__ == "__main__":
     smg = SendMessageGUI()
