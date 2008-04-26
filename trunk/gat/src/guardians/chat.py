@@ -21,9 +21,13 @@ class Mail:
         self.server.close()
     
     def send_mail(self):
-        self.connect_server()
-        self.server.sendmail(self.rem, self.rec, self.make_message())
-        self.disconnect_server()
+        try:
+            self.connect_server()
+            self.server.sendmail(self.rem, self.rec, self.make_message())
+            self.disconnect_server()
+        except smtplib.SMTPException:
+            return False
+        return True
 
 class MailToGuardians(Mail):
     def __init__(self,remitter,body):
