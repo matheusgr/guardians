@@ -21,7 +21,7 @@ class DiskCleanGUI:
     """This is a GUI for DiskClean application"""
 
     def __init__(self):
-                
+
         #Set the Glade file
         self.gladefile = _r("dc_gui.glade")  
         self.wTree = gtk.glade.XML(self.gladefile) 
@@ -31,6 +31,7 @@ class DiskCleanGUI:
                 "on_compact_clicked" : self.compact_clicked,
                 "on_move_clicked" : self.move_clicked,
                 "on_tree_cursor_changed" : self.tree_cursor_changed,
+                "on_exit_clicked" : gtk.main_quit,
                 "on_dc_gui_destroy" : gtk.main_quit }
         self.wTree.signal_autoconnect(dic)
         diskView = self.prepare_disk_view()
@@ -45,6 +46,8 @@ class DiskCleanGUI:
         column_file = gtk.TreeViewColumn("Diretorio/Arquivo", gtk.CellRendererText(), text=0)
         column_file.set_sort_column_id(0)
         column_file.set_sort_indicator(True)
+        column_file.set_max_width(400)
+        column_file.set_min_width(400)
         diskView.append_column(column_file)
         
         column_space = gtk.TreeViewColumn("Espaco", gtk.CellRendererProgress(), value=1)
