@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from guardians import dc_model
-from tarfile import TarFile
 import os
 
 import sys
@@ -20,7 +19,7 @@ from resource import find_resource as _r
 class DiskCleanGUI:
     """This is a GUI for DiskClean application"""
 
-    def __init__(self):
+    def __init__(self, directory, quota_limit):
 
         #Set the Glade file
         self.gladefile = _r("dc_gui.glade")  
@@ -34,14 +33,21 @@ class DiskCleanGUI:
                 "on_exit_clicked" : gtk.main_quit,
                 "on_dc_gui_destroy" : gtk.main_quit }
         self.wTree.signal_autoconnect(dic)
-        diskView = self.prepare_disk_view()
-        diskTree = self.prepare_disk_tree(diskView)
-        r = dc_model.DiskCleanModel("/home/matheusgr/videos").get_list()
-        self.build_tree(r, None, diskTree, 30000000000)
+        self.directory = directory
+        self.quota_limit = quota_limit
+
+        self.redraw()
+
+    def redraw(self):
+        self.diskTree = self.prepare_disk_tree(self.prepare_disk_view())
+        self.build_tree(dc_model.get_list(self.directory), None, self.diskTree, self.quota_limit)
         self.selected_dir = None
 
     def prepare_disk_view(self):
         diskView = self.wTree.get_widget("tree")
+        
+        for col in diskView.get_columns():
+            diskView.remove_column(col)
         
         column_file = gtk.TreeViewColumn("Diretorio/Arquivo", gtk.CellRendererText(), text=0)
         column_file.set_sort_column_id(0)
@@ -74,25 +80,17 @@ class DiskCleanGUI:
             return
         model, iter = widget.get_selection().get_selected()
         self.selected_dir = model.get_value(iter, 0)
-    
+        
     def delete_clicked(self, widget):
         if not (self.selected_dir is None):
-            confirmDialog = gtk.Dialog("Confirma apagar?", self.wTree.get_widget("dc_gui"), gtk.DIALOG_DESTROY_WITH_PARENT, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+            confirmDialog = gtk.Dialog("Confirma apagar?", self.wTree.get_widget("dc_gui"), gtk.DIALOG_DESTROY_WITH_PARENT, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
             response = confirmDialog.run()
             if response == gtk.RESPONSE_OK:
-                self.recursive_delete(self.selected_dir)
+                dc_model.recursive_delete(self.selected_dir)
+                self.redraw()
             elif response == gtk.RESPONSE_CANCEL:
                 pass
             confirmDialog.destroy()
-
-    def recursive_delete(self, directory):
-        try:
-            listdir = os.listdir(directory)
-            for dir in listdir:
-                self.recursive_delete(directory + os.sep + dir)
-            os.rmdir(directory)
-        except (OSError):
-            os.remove(directory)
     
     def compact_clicked(self, widget):
         if not (self.selected_dir is None):
@@ -100,12 +98,8 @@ class DiskCleanGUI:
             fileChooserDialog.set_current_name(self.selected_dir + ".tar.bz2")
             response = fileChooserDialog.run()
             if response == gtk.RESPONSE_OK:
-                tmpname = os.tmpnam()
-                t = TarFile.open(tmpname, "w:bz2")
-                t.add(self.selected_dir)
-                t.close()
-                os.rename(tmpname, fileChooserDialog.get_filename())
-                self.recursive_delete(self.selected_dir)
+                dc_model.compact(self.selected_dir, fileChooserDialog.get_filename())
+                self.redraw()
             elif response == gtk.RESPONSE_CANCEL:
                 pass
             fileChooserDialog.destroy()
@@ -115,11 +109,18 @@ class DiskCleanGUI:
             fileChooserDialog = gtk.FileChooserDialog("Mover para", self.wTree.get_widget("dc_gui"), gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
             response = fileChooserDialog.run()
             if response == gtk.RESPONSE_OK:
-                os.rename(self.selected_dir, fileChooserDialog.get_filename() + os.sep + self.selected_dir.split(os.sep)[-1])
+                dc_model.move(self.selected_dir, \
+                              fileChooserDialog.get_filename() + \
+                              os.sep + \
+                              self.selected_dir.split(os.sep)[-1])
+                self.redraw()
             elif response == gtk.RESPONSE_CANCEL:
                 pass
             fileChooserDialog.destroy()
     
-if __name__ == "__main__":
-    smg = DiskCleanGUI()
+def main():    
+    smg = DiskCleanGUI(os.path.abspath(os.curdir), 80*1000*1024)
     gtk.main()
+
+if __name__ == "__main__":
+    main()
