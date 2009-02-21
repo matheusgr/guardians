@@ -24,17 +24,17 @@ class SendMessageGUI:
         self.wTree = gtk.glade.XML(self.gladefile)
         
         # accessing windows
-        self.principalWindow = widgetTree.get_widget('sMessageWindow')
-        self.dialogWindow = widgetTree.get_widget('waitWindow')
+        self.principalWindow = self.wTree.get_widget('sMessageWindow')
+        self.dialogWindow = self.wTree.get_widget('waitWindow')
         
         # accessing widgets => principalWindow
-        self.txtMessage = widgetTree.get_widget('txtMessage')
-        self.btnCancel = widgetTree.get_widget('cancel')
-        self.btnSMessage = widgetTree.get_widget('sendMessage')
+        self.txtMessage = self.wTree.get_widget('txtMessage')
+        self.btnCancel = self.wTree.get_widget('cancel')
+        self.btnSMessage = self.wTree.get_widget('sendMessage')
         
         # accessing widgets => dialogWindow
-        self.lblInformation = widgetTree.get_widget('lblInformation')
-        self.btnOk = widgetTree.get_widget('btnOk')
+        self.lblInformation = self.wTree.get_widget('lblInformation')
+        self.btnOk = self.wTree.get_widget('btnOk')
                  
         #Create our dictionary and connect it
         dic = { "on_cancel_clicked" : self.cancel_clicked,
@@ -43,8 +43,7 @@ class SendMessageGUI:
         self.wTree.signal_autoconnect(dic)
         
     def cancel_clicked(self, widget):
-        self.clean_message()
-        gtk.main_quit
+        gtk.main_quit()
            
     
     def sendMessage_clicked(self, widget):
