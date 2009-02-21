@@ -10,8 +10,8 @@ import qc_model
 class QuotaCheckGUI:
     """QuotaChecking GUI"""
 
-    def __init__(self):
-        self.qc_model = qc_model.QuotaCheckModel()
+    def __init__(self, model):
+        self.qc_model = model
         
         #Set the Glade file
         self.gladefile = _r("qc_gui.glade")
@@ -87,5 +87,5 @@ class QuotaCheckGUI:
         return box
             
 if __name__ == "__main__":
-    QuotaCheckGUI()
+    QuotaCheckGUI(qc_model.QuotaCheckModelTest())
     gtk.main()
