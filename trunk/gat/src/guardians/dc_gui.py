@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from guardians import dc_model
+import dc_model
 import os
 
 import sys
@@ -69,21 +69,26 @@ class DiskCleanGUI:
     
     def build_tree(self, model, parent, disktree, max):
         for a in model:
-            if len(a) == 3:
+            if len(a) == 3: # Directory
                 insert = disktree.insert(parent, 0, [a[0], float(a[2])/max * 100])
                 self.build_tree(a[1], insert, disktree, max)
-            else:
-                insert = disktree.insert(parent, 0, [a[0], float(a[1])/max * 100])
+            else: # File
+                disktree.insert(parent, 0, [a[0], float(a[1])/max * 100])
 
     def tree_cursor_changed(self, widget):
         if type(widget) is None:
             return
         model, iter = widget.get_selection().get_selected()
         self.selected_dir = model.get_value(iter, 0)
+        iter = model.iter_parent(iter)
+        while iter:
+            self.selected_dir = model.get_value(iter, 0) + os.sep + self.selected_dir
+            iter = model.iter_parent(iter)
+        print self.selected_dir
         
     def delete_clicked(self, widget):
         if not (self.selected_dir is None):
-            confirmDialog = gtk.Dialog("Confirma apagar?", self.wTree.get_widget("dc_gui"), gtk.DIALOG_DESTROY_WITH_PARENT, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
+            confirmDialog = gtk.Dialog("Delete " + str(self.selected_dir) + "?", self.wTree.get_widget("dc_gui"), gtk.DIALOG_DESTROY_WITH_PARENT, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
             response = confirmDialog.run()
             if response == gtk.RESPONSE_OK:
                 dc_model.recursive_delete(self.selected_dir)
@@ -119,7 +124,7 @@ class DiskCleanGUI:
             fileChooserDialog.destroy()
     
 def main():    
-    smg = DiskCleanGUI(os.path.abspath(os.curdir), 80*1000*1024)
+    smg = DiskCleanGUI(os.path.abspath(os.curdir), 400*1024)
     gtk.main()
 
 if __name__ == "__main__":
