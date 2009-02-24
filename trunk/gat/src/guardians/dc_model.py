@@ -2,7 +2,27 @@ import os
 import os.path
 from tarfile import TarFile
 
-def _recursive_list(base_dir, current, result):
+class Node:
+    def __init__(self, name, size, parent):
+        self.name = name
+        self.size = size
+        self.parent = parent
+        self.child = []
+        self.is_dir = False
+
+    def __rstr(self, size):
+        result = ''
+        result += self.name + ' ' + str(self.size) + '\n'
+        for c in self.child:
+            print c
+            result += size*' ' + Node.__rstr(c, size + 2)
+        return result
+
+    def __repr__(self):
+        return self.__rstr(0)
+        
+
+def _recursive_list(base_dir, current, parent):
     """
     List a directory recursively. Result list will return a tree where each
     node represents a directory or a file. When a node is a file, it will
@@ -14,21 +34,22 @@ def _recursive_list(base_dir, current, result):
         listdir = os.listdir(ffile)
     elif os.path.isfile(ffile):
         size = os.lstat(ffile).st_size
-        result.append([current, size])
+        child = Node(current, size, parent)
+        parent.child.append(child)
         return size
-    cur_result = []
-    size = 0
+    dir_child = Node(current, 0, parent)
+    dir_child.is_dir = True
     for d in listdir:
-        size += _recursive_list(ffile, d, cur_result)
-    cur_result.sort(lambda x, y: cmp(x[-1], y[-1])) # Sort by size
-    result.append([current, cur_result, size])
-    return size
+        dir_child.size += _recursive_list(ffile, d, dir_child)
+    parent.child.append(dir_child)
+    dir_child.child.sort(key = lambda x: x.size, reverse=True)
+    return dir_child.size
 
 def get_list(directory):
-    result = []
-    _recursive_list(directory, '.', result)
-    result[0][0] = directory
-    return result
+    root = Node('.', 0, None)
+    _recursive_list(directory, '.', root)
+    root.name = directory
+    return root
 
 def recursive_delete(directory):
     try:
