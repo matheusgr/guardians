@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="icons" >
+    <file>system-help.png</file>
+    <file>user-home.png</file>
+    <file>mail-message.png</file>
+    <file>network-server-database.png</file>
+  </qresource>
+</RCC>

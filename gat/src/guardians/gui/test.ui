@@ -1,0 +1,165 @@
+<ui version="4.0" >
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <widget class="QSlider" name="horizontalSlider" >
+    <property name="geometry" >
+     <rect>
+      <x>310</x>
+      <y>170</y>
+      <width>160</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="orientation" >
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="progressBar" >
+    <property name="geometry" >
+     <rect>
+      <x>280</x>
+      <y>310</y>
+      <width>118</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="value" >
+     <number>24</number>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="textBrowser" >
+    <property name="geometry" >
+     <rect>
+      <x>480</x>
+      <y>290</y>
+      <width>256</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QWidget" native="1" name="widget" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>90</y>
+      <width>221</width>
+      <height>281</height>
+     </rect>
+    </property>
+    <widget class="QFontComboBox" name="fontComboBox" >
+     <property name="geometry" >
+      <rect>
+       <x>20</x>
+       <y>50</y>
+       <width>199</width>
+       <height>27</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="pushButton" >
+    <property name="geometry" >
+     <rect>
+      <x>140</x>
+      <y>450</y>
+      <width>106</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>PushButton</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuTetew" >
+    <property name="title" >
+     <string>tetew</string>
+    </property>
+    <addaction name="actionRlglrr" />
+   </widget>
+   <addaction name="menuTetew" />
+  </widget>
+  <widget class="QStatusBar" name="statusbar" />
+  <action name="actionRlglrr" >
+   <property name="text" >
+    <string>rlglrr</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>actionTriggered(int)</signal>
+   <receiver>progressBar</receiver>
+   <slot>setMaximum(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>354</x>
+     <y>215</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>349</x>
+     <y>352</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textBrowser</sender>
+   <signal>undoAvailable(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot1()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>514</x>
+     <y>363</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>606</x>
+     <y>187</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>toolButtonStyleChanged(Qt::ToolButtonStyle)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot2()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>30</x>
+     <y>28</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>68</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slot1()</slot>
+  <slot>slot2()</slot>
+ </slots>
+</ui>
