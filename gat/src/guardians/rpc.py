@@ -14,6 +14,8 @@ import xdrlib
 import socket
 import os
 
+TIMEOUT = 0.5
+
 RPCVERSION = 2
 
 CALL = 0
@@ -342,6 +344,7 @@ class RawTCPClient(Client):
 
     def makesocket(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.settimeout(TIMEOUT)
 
     def do_call(self):
         call = self.packer.get_buf()
@@ -362,6 +365,7 @@ class RawUDPClient(Client):
 
     def makesocket(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.settimeout(TIMEOUT)
 
     def do_call(self):
         call = self.packer.get_buf()
@@ -751,6 +755,7 @@ class TCPServer(Server):
 
     def makesocket(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.settimeout(TIMEOUT)
         self.prot = IPPROTO_TCP
 
     def loop(self):
@@ -805,6 +810,7 @@ class UDPServer(Server):
 
     def makesocket(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.settimeout(TIMEOUT)
         self.prot = IPPROTO_UDP
 
     def loop(self):
