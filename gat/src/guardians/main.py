@@ -1,6 +1,22 @@
-from gui import main, quota, disk, message, faq
+from gui import main, disk, message, faq
 from PyQt4 import QtCore, QtGui
 import dc_model
+
+def translate_size(bytes):
+    kb = 1024
+    mb = 1024 * kb
+    gb = 1024 * mb
+    tb = 1024 * gb
+    if bytes >= tb:
+        return str(bytes / tb) + " TB"
+    if bytes >= gb:
+        return str(bytes / gb) + " GB"
+    if bytes >= mb:
+        return str(bytes / mb) + " MB"
+    if bytes >= kb:
+        return str(bytes / kb) + " KB"
+    return str(bytes) + " bytes"
+
 
 class DiskModel(QtCore.QAbstractItemModel):
     def __init__(self, result):
@@ -43,20 +59,8 @@ class DiskModel(QtCore.QAbstractItemModel):
         col = model_index.column()
         if col == 0:
             return QtCore.QVariant(QtCore.QString(model_index.internalPointer().name))
-        kb = 1024
-        mb = 1024 * kb
-        gb = 1024 * mb
-        tb = 1024 * gb
         bytes = model_index.internalPointer().size
-        if bytes >= tb:
-            return QtCore.QVariant(str(bytes / tb) + " TB")
-        if bytes >= gb:
-            return QtCore.QVariant(str(bytes / gb) + " GB")
-        if bytes >= mb:
-            return QtCore.QVariant(str(bytes / mb) + " MB")
-        if bytes >= kb:
-            return QtCore.QVariant(str(bytes / kb) + " KB")
-        return QtCore.QVariant(str(bytes) + " bytes")
+        return QtCore.QVariant(QtCore.QString(translate_size(bytes)))
     def flags(self, index):
         if not index.isValid():
             return 0
@@ -78,14 +82,38 @@ def new_widget(widget):
     widget.repaint()
     main_widget.repaint()
 
-def quota_clicked():
-    new_widget(quota_widget)
-
-def disk_clicked():
-    new_widget(disk_widget)
-
 def message_clicked():
     new_widget(message_widget)
+
+def edit_buttons(buttons):
+    pass
+
+def create_quota_buttons(num_buttons):
+    result = []
+    i = 0
+    for disk in xrange(num_buttons):
+        button = QtGui.QToolButton(disk_widget)
+        font = QtGui.QFont()
+        font.setPointSize(6)
+        button.setFont(font)
+        button.setObjectName("quota_button" + str(i))
+        i += 1
+    return result
+
+def set_buttons(quotas, buttons):
+    for q in quotas:
+        button.setText(QtGui.QApplication.translate("Frame", "coisafofa:/var/mail\n2/8 Mb", None, QtGui.QApplication.UnicodeUTF8))
+
+def disk_clicked():
+    #d_frame.horizontalLayout_3 = QtGui.QHBoxLayout()
+    #d_frame.horizontalLayout_3.setObjectName("horizontalLayout_3")
+    #d_frame.toolButton_5 = QtGui.QToolButton(Frame)
+    #font = QtGui.QFont()
+    #font.setPointSize(6)
+    #d_frame.toolButton_5.setFont(font)
+    #d_frame.toolButton_5.setObjectName("toolButton_5")
+    #d_frame.horizontalLayout_3.addWidget(d_frame.toolButton_5)
+    new_widget(disk_widget)
 
 def faq_clicked():
     new_widget(faq_widget)
@@ -98,13 +126,9 @@ disk_widget.hide()
 d_frame = disk.Ui_Frame()
 d_frame.setupUi(disk_widget)
 model = DiskModel(dc_model.get_list('.'))
-d_frame.treeView.setModel(model)
-d_frame.treeView.setColumnWidth(0, 280)
-d_frame.treeView.setColumnWidth(1, 100)
-
-quota_widget = QtGui.QFrame(main_widget)
-quota_widget.hide()
-quota.Ui_Frame().setupUi(quota_widget)
+d_frame.diskTreeView.setModel(model)
+d_frame.diskTreeView.setColumnWidth(0, 280)
+d_frame.diskTreeView.setColumnWidth(1, 100)
 
 message_widget = QtGui.QFrame(main_widget)
 message_widget.hide()
@@ -117,8 +141,7 @@ faq.Ui_Frame().setupUi(faq_widget)
 form = main.Ui_Form()
 form.setupUi(main_widget)
 
-QtCore.QObject.connect(form.quota_button, QtCore.SIGNAL("clicked()"), quota_clicked)
-QtCore.QObject.connect(form.home_button, QtCore.SIGNAL("clicked()"), disk_clicked)
+QtCore.QObject.connect(form.quota_button, QtCore.SIGNAL("clicked()"), disk_clicked)
 QtCore.QObject.connect(form.mail_button, QtCore.SIGNAL("clicked()"), message_clicked)
 QtCore.QObject.connect(form.faq_button, QtCore.SIGNAL("clicked()"), faq_clicked)
 main_widget.show()

@@ -51,26 +51,6 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="home_button" >
-          <property name="toolTip" >
-           <string>Disk Utils</string>
-          </property>
-          <property name="text" >
-           <string/>
-          </property>
-          <property name="icon" >
-           <iconset resource="icons.qrc" >
-            <normaloff>:/icons/user-home.png</normaloff>:/icons/user-home.png</iconset>
-          </property>
-          <property name="iconSize" >
-           <size>
-            <width>48</width>
-            <height>48</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QToolButton" name="mail_button" >
           <property name="toolTip" >
            <string>Mail To Admin</string>

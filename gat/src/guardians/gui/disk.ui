@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>324</width>
-    <height>254</height>
+    <width>578</width>
+    <height>356</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -18,27 +18,80 @@
   <property name="frameShadow" >
    <enum>QFrame::Raised</enum>
   </property>
-  <layout class="QGridLayout" name="gridLayout" >
-   <item row="1" column="0" >
-    <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <layout class="QHBoxLayout" name="quotaLayout" >
+     <item>
+      <widget class="QToolButton" name="toolButton_5" >
+       <property name="font" >
+        <font>
+         <pointsize>6</pointsize>
+        </font>
+       </property>
+       <property name="text" >
+        <string>coisafofa:/var/mail
+2/8 Mb</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButton_4" >
+       <property name="font" >
+        <font>
+         <pointsize>6</pointsize>
+        </font>
+       </property>
+       <property name="text" >
+        <string>coisafofa:/home
+82/150 Mb</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButton_6" >
+       <property name="font" >
+        <font>
+         <pointsize>6</pointsize>
+        </font>
+       </property>
+       <property name="text" >
+        <string>seulunga:/home
+30/100 Mb</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_2" >
+     <item>
+      <widget class="QTreeView" name="diskTreeView" >
+       <property name="selectionMode" >
+        <enum>QAbstractItemView::ExtendedSelection</enum>
+       </property>
+       <property name="sortingEnabled" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout" >
        <item>
-        <widget class="QToolButton" name="toolButton" >
+        <widget class="QToolButton" name="deleteButton" >
          <property name="text" >
           <string>Delete</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolButton_3" >
+        <widget class="QToolButton" name="compactButton" >
          <property name="text" >
           <string>Compact</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolButton_2" >
+        <widget class="QToolButton" name="moveButton" >
          <property name="text" >
           <string>Move</string>
          </property>
@@ -47,16 +100,6 @@
       </layout>
      </item>
     </layout>
-   </item>
-   <item row="0" column="0" >
-    <widget class="QTreeView" name="treeView" >
-     <property name="selectionMode" >
-      <enum>QAbstractItemView::ExtendedSelection</enum>
-     </property>
-     <property name="sortingEnabled" >
-      <bool>true</bool>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
