@@ -10,15 +10,17 @@ STATUS_EPERM = 3
 # Model: [host, disk, status, values]
 # where "values" is defined at rquota structure (see unpack_rquota at rquota.py)
 class QuotaCheckModel:
-    def __init__(self):
-        self.uid = os.getuid()
-        self.hosts = [('coisafofa','/home'), ('seulunga','/home')]
     
+    def __init__(self, hosts):
+        self.uid = os.getuid()
+        self.hosts = hosts
+
     def _getList(self, host, disk, status, value):
-        value_list = list(value)
-        value_list.insert(0, host)
-        value_list.insert(1, disk)
-        value_list.insert(2, status)
+        value_list = []
+        value_list.append(host)
+        value_list.append(disk)
+        value_list.append(status)
+        value_list.append(value)
         return value_list
     
     def getQuota(self):
@@ -35,8 +37,6 @@ class QuotaCheckModel:
         return result
 
 class QuotaCheckModelTest(QuotaCheckModel):
-    def __init__(self):
-        self.uid = os.getuid()
 
     def getQuota(self):
         result = []
@@ -48,7 +48,8 @@ class QuotaCheckModelTest(QuotaCheckModel):
         
             
 def main():
-    print QuotaCheckModel().getQuota()
+    print QuotaCheckModelTest([('coisafofa','/home'), ('seulunga','/home')]).getQuota()
+    print QuotaCheckModel([('coisafofa','/home'), ('seulunga','/home')]).getQuota()
 
 if __name__ == "__main__":
     main()
