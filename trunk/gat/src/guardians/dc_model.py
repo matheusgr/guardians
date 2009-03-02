@@ -37,6 +37,9 @@ def _recursive_list(base_dir, current, parent):
         child = Node(current, size, parent)
         parent.child.append(child)
         return size
+    else:
+        # ignoring unknow type
+        return 0
     dir_child = Node(current, 0, parent)
     dir_child.is_dir = True
     for d in listdir:
@@ -48,7 +51,7 @@ def _recursive_list(base_dir, current, parent):
 def get_list(directory):
     root = Node('.', 0, None)
     _recursive_list(directory, '.', root)
-    root.name = directory
+    root.child[0].name = directory # True first directory
     return root
 
 def recursive_delete(directory):
