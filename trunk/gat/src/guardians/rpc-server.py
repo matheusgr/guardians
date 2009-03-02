@@ -4,7 +4,7 @@ from rquota import RQUOTAPROG, RQUOTAVERS
 
 rpc.TIMEOUT = 1000 # Loop will last until timeout!
 
-class RQuotaServer(UDPServer):
+class RQuotaServer(TCPServer):
     def __init__(self, server, quotas=None):
         if quotas == None:
             quotas = {}
@@ -12,7 +12,7 @@ class RQuotaServer(UDPServer):
             quotas['/tmp'] = (0,)
             quotas['/var/mail'] = (1, 1000, True, 10000, 8000, 9, 2000, 1000, 200, 0, 0)
         self.quotas = quotas
-        UDPServer.__init__(self, '', RQUOTAPROG, RQUOTAVERS, 0)
+        TCPServer.__init__(self, '', RQUOTAPROG, RQUOTAVERS, 0)
     
     def handle_1(self):
         disk = self.unpacker.unpack_string()
