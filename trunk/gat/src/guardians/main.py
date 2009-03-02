@@ -145,4 +145,5 @@ QtCore.QObject.connect(form.quota_button, QtCore.SIGNAL("clicked()"), disk_click
 QtCore.QObject.connect(form.mail_button, QtCore.SIGNAL("clicked()"), message_clicked)
 QtCore.QObject.connect(form.faq_button, QtCore.SIGNAL("clicked()"), faq_clicked)
 main_widget.show()
+app.setStyle('cleanlooks')
 app.exec_()
