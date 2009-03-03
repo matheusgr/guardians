@@ -2,12 +2,11 @@ import functools
 
 from PyQt4 import QtCore, QtGui
 
-import dc_model
-import qc_model
+import disk, quota
+import gui
 import config
 
-from gui import main, disk, message, faq
-from disk_model import DiskModel, translate_size
+from gui.disk_model import DiskModel
 
 def new_widget(widget):
     form.verticalLayout.removeWidget(form.current_widget)
@@ -18,28 +17,24 @@ def new_widget(widget):
     widget.repaint()
     main_widget.repaint()
 
-def message_clicked():
-    new_widget(message_widget)
-
-def disk_clicked():
-    new_widget(disk_widget)
-
-def faq_clicked():
-    new_widget(faq_widget)
-
-def create_quota_buttons(quotas_map):
+def create_quota_buttons(widget, quotas_map):
     result = {}
     i = 0
     for server in quotas_map.keys():
-        button = QtGui.QToolButton(disk_widget)
+        button = QtGui.QToolButton(widget)
         font = QtGui.QFont()
         font.setPointSize(6)
         button.setFont(font)
         button.setObjectName("quota_button" + str(i))
         result[server] = button
-        model = DiskModel(dc_model.get_list(quotas_map[server]))
-        f = functools.partial(lambda x : d_frame.diskTreeView.setModel(x) or d_frame.diskTreeView.setColumnWidth(0, 280) or d_frame.diskTreeView.setColumnWidth(1, 100), model)
+        model = DiskModel(disk.get_list(quotas_map[server]), lambda x : ' '.join(disk.translate_size(x)))
+        f = functools.partial(
+            lambda x : quota_frame.diskTreeView.setModel(x) or \
+                quota_frame.diskTreeView.setColumnWidth(0, 280) or \
+                quota_frame.diskTreeView.setColumnWidth(1, 100), \
+            model)
         QtCore.QObject.connect(button, QtCore.SIGNAL("clicked()"), f)
+        i += 1
     return result
 
 def set_buttons(quotas, buttons):
@@ -53,7 +48,7 @@ def set_buttons(quotas, buttons):
             hardlimit = q[3][2]
             softlimit = q[3][3]
             curblocks = q[3][4]
-            result += str(translate_size(curblocks).split()[0]) + '/' + translate_size(hardlimit)
+            result += str(disk.translate_size(curblocks)[0]) + '/' + ' '.join(disk.translate_size(hardlimit))
         else:
             result += '-'
         buttons[(server, dir)].setText(QtGui.QApplication.translate("Frame", result, None, QtGui.QApplication.UnicodeUTF8))
@@ -61,36 +56,34 @@ def set_buttons(quotas, buttons):
 app = QtGui.QApplication([])
 main_widget = QtGui.QWidget()
 
-disk_widget = QtGui.QFrame(main_widget)
-disk_widget.hide()
-d_frame = disk.Ui_Frame()
-d_frame.setupUi(disk_widget)
+quota_widget = QtGui.QFrame(main_widget)
+quota_widget.hide()
+quota_frame = gui.disk.Ui_Frame()
+quota_frame.setupUi(quota_widget)
 
 quota_map = config.Config().getQuotasMap()
-quota_model = qc_model.QuotaCheckModel(quota_map.keys())
+quota_model = quota.QuotaCheck(quota_map.keys())
 quotas = quota_model.getQuota()
-quota_buttons = create_quota_buttons(quota_map)
+quota_buttons = create_quota_buttons(quota_widget, quota_map)
 set_buttons(quotas, quota_buttons)
 for button in quota_buttons.values():
-    d_frame.quotaLayout.addWidget(button)
-#model = DiskModel(dc_model.get_list('.'))
-
-#d_frame.diskTreeView.setModel(model)
+    quota_frame.quotaLayout.addWidget(button)
 
 message_widget = QtGui.QFrame(main_widget)
 message_widget.hide()
-message.Ui_SendMailWidget().setupUi(message_widget)
+gui.message.Ui_SendMailWidget().setupUi(message_widget)
 
 faq_widget = QtGui.QFrame(main_widget)
 faq_widget.hide()
-faq.Ui_Frame().setupUi(faq_widget)
+gui.faq.Ui_Frame().setupUi(faq_widget)
 
-form = main.Ui_Form()
+form = gui.main.Ui_Form()
 form.setupUi(main_widget)
 
-QtCore.QObject.connect(form.quota_button, QtCore.SIGNAL("clicked()"), disk_clicked)
-QtCore.QObject.connect(form.mail_button, QtCore.SIGNAL("clicked()"), message_clicked)
-QtCore.QObject.connect(form.faq_button, QtCore.SIGNAL("clicked()"), faq_clicked)
+QtCore.QObject.connect(form.quota_button, QtCore.SIGNAL("clicked()"), functools.partial(lambda x : new_widget(x), quota_widget))
+QtCore.QObject.connect(form.message_button, QtCore.SIGNAL("clicked()"), functools.partial(lambda x : new_widget(x), message_widget))
+QtCore.QObject.connect(form.faq_button, QtCore.SIGNAL("clicked()"), functools.partial(lambda x : new_widget(x), faq_widget))
+
 main_widget.show()
 app.setStyle('cleanlooks')
 app.exec_()

@@ -1,24 +1,10 @@
 from PyQt4 import QtCore, QtGui
 
-def translate_size(bytes):
-    kb = 1024
-    mb = 1024 * kb
-    gb = 1024 * mb
-    tb = 1024 * gb
-    if bytes >= tb:
-        return str(bytes / tb) + " TB"
-    if bytes >= gb:
-        return str(bytes / gb) + " GB"
-    if bytes >= mb:
-        return str(bytes / mb) + " MB"
-    if bytes >= kb:
-        return str(bytes / kb) + " KB"
-    return str(bytes) + " bytes"
-
 class DiskModel(QtCore.QAbstractItemModel):
-    def __init__(self, result):
+    def __init__(self, result, translate_size):
         QtCore.QAbstractItemModel.__init__(self)
         self.root = result
+        self.translate_size = translate_size
     def index(self, row, col, parent):
         if not self.hasIndex(row, col, parent):
             return QtCore.QModelIndex()
@@ -57,7 +43,7 @@ class DiskModel(QtCore.QAbstractItemModel):
         if col == 0:
             return QtCore.QVariant(QtCore.QString(model_index.internalPointer().name))
         bytes = model_index.internalPointer().size
-        return QtCore.QVariant(QtCore.QString(translate_size(bytes)))
+        return QtCore.QVariant(QtCore.QString(self.translate_size(bytes)))
     def flags(self, index):
         if not index.isValid():
             return 0

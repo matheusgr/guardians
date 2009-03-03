@@ -2,6 +2,21 @@ import os
 import os.path
 from tarfile import TarFile
 
+def translate_size(bytes):
+    kb = 1024
+    mb = 1024 * kb
+    gb = 1024 * mb
+    tb = 1024 * gb
+    if bytes >= tb:
+        return (str(bytes / tb), "TB")
+    if bytes >= gb:
+        return (str(bytes / gb), "GB")
+    if bytes >= mb:
+        return (str(bytes / mb), "MB")
+    if bytes >= kb:
+        return (str(bytes / kb), "KB")
+    return (str(bytes), "bytes")
+
 class Node:
     def __init__(self, name, size, parent):
         self.name = name
