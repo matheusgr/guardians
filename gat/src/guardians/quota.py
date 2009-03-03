@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-import os, rquota
+import os
+
+from rpc import rquota
 
 STATUS_EXCEPT = -1
 STATUS_OK = 1
@@ -9,7 +11,7 @@ STATUS_EPERM = 3
 
 # Model: [host, disk, status, values]
 # where "values" is defined at rquota structure (see unpack_rquota at rquota.py)
-class QuotaCheckModel:
+class QuotaCheck:
     
     def __init__(self, hosts):
         self.uid = os.getuid()
@@ -36,7 +38,7 @@ class QuotaCheckModel:
                 result.append(self._getList(host,disk,STATUS_EXCEPT,()))
         return result
 
-class QuotaCheckModelTest(QuotaCheckModel):
+class QuotaCheckTest(QuotaCheck):
 
     def getQuota(self):
         result = []
@@ -48,8 +50,8 @@ class QuotaCheckModelTest(QuotaCheckModel):
         
             
 def main():
-    print QuotaCheckModelTest([('coisafofa','/home'), ('seulunga','/home')]).getQuota()
-    print QuotaCheckModel([('coisafofa','/home'), ('seulunga','/home')]).getQuota()
+    print QuotaCheckTest([('coisafofa','/home'), ('seulunga','/home')]).getQuota()
+    print QuotaCheck([('coisafofa','/home'), ('seulunga','/home')]).getQuota()
 
 if __name__ == "__main__":
     main()
