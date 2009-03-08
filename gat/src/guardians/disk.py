@@ -25,6 +25,9 @@ class Node:
         self.child = []
         self.is_dir = False
 
+    def is_root(self):
+        return self.parent == None
+
     def __rstr(self, size):
         result = ''
         result += self.name + ' ' + str(self.size) + '\n'
@@ -64,8 +67,8 @@ def _recursive_list(base_dir, current, parent):
     return dir_child.size
 
 def get_list(directory):
-    root = Node('.', 0, None)
-    _recursive_list(directory, '.', root)
+    root = Node(directory, 0, None)
+    _recursive_list(directory, '', root)
     root.child[0].name = directory # True first directory
     return root
 
