@@ -1,5 +1,6 @@
 import os
 import os.path
+import shutil
 from tarfile import TarFile
 
 def translate_size(bytes):
@@ -38,6 +39,17 @@ class Node:
 
     def __repr__(self):
         return self.__rstr(0)
+
+    def path(self):
+        i_tmp = self
+        path = ''
+        while i_tmp.parent:
+            if i_tmp.parent.is_root():
+                path = i_tmp.name + path
+            else:
+                path = os.path.sep + i_tmp.name + path
+            i_tmp = i_tmp.parent
+        return path
         
 
 def _recursive_list(base_dir, current, parent):
@@ -90,4 +102,4 @@ def compact(directory, dest_file):
     recursive_delete(directory)
     
 def move(old, new):
-    os.rename(old, new)
+    shutil.move(old, new)
