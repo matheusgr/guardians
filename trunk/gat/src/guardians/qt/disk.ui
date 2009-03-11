@@ -26,11 +26,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QTreeView" name="diskTreeView">
-       <property name="selectionMode">
-        <enum>QAbstractItemView::ExtendedSelection</enum>
-       </property>
-      </widget>
+      <widget class="QTreeView" name="diskTreeView"/>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
