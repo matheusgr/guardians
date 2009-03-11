@@ -98,8 +98,8 @@ def compact(directory, dest_file):
     t = TarFile.open(tmpname, "w:bz2")
     t.add(directory)
     t.close()
-    os.rename(tmpname, dest_file)
     recursive_delete(directory)
+    shutil.move(tmpname, dest_file)
     
 def move(old, new):
     shutil.move(old, new)
