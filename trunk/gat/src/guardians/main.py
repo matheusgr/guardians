@@ -106,7 +106,7 @@ QtCore.QObject.connect(form.message_button, QtCore.SIGNAL("clicked()"), functool
 QtCore.QObject.connect(form.faq_button, QtCore.SIGNAL("clicked()"), functools.partial(lambda x : new_widget(x), faq_widget))
 
 def get_selection():
-    return quota_frame.diskTreeView.selectedIndexes()[0].internalPointer()
+    return quota_frame.diskTreeView.selectedIndexes()[0].internalPointer().path()
 
 def delete():
     src = get_selection()
@@ -115,13 +115,13 @@ def delete():
 
 def move():
     src = get_selection()
-    dest_dir = QtGui.QFileDialog.getExistingDirectory()
+    dest_dir = unicode(QtGui.QFileDialog.getExistingDirectory())
     disk.move(src, dest_dir)
     model_update.update()
 
 def compact():
     src = get_selection()
-    dest_filename = QtGui.QFileDialog.getSaveFileName()
+    dest_filename = unicode(QtGui.QFileDialog.getSaveFileName())
     disk.compact(src, dest_filename)
     model_update.update()
 
