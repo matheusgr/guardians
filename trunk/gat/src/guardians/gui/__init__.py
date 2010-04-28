@@ -1,1 +1,1 @@
-import main, message, disk, faq
+import main, disk
