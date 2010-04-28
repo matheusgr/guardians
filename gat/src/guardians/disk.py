@@ -3,6 +3,9 @@ import os.path
 import shutil
 from tarfile import TarFile
 
+"""
+Translate a size in bytes to human readable format
+"""
 def translate_size(bytes):
     kb = 1024
     mb = 1024 * kb

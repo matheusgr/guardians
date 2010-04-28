@@ -1,6 +1,12 @@
 from PyQt4 import QtCore, QtGui
 
+"""
+A DiskModel defines the behavior of an DiskTreeView.
+"""
 class DiskModel(QtCore.QAbstractItemModel):
+    """
+    Defines the root directory and a translation function that defines the second column value 
+    """
     def __init__(self, result, translate_size):
         QtCore.QAbstractItemModel.__init__(self)
         self.root = result
